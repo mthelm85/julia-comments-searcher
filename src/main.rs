@@ -1,5 +1,4 @@
 use std::env;
-use owo_colors::OwoColorize;
 use tantivy::{
     collector::TopDocs,
     query::QueryParser,
@@ -11,7 +10,6 @@ use tantivy::{
 
 fn main() -> tantivy::Result<()> {
     let search_string = env::args().nth(1).expect("no search term provided");
-    println!("Searching for: {}", search_string);
     let index_path = dirs::data_local_dir().unwrap().join("JuliaSearch");
     let index = Index::open(MmapDirectory::open(index_path).unwrap())?;
     let reader = index
@@ -32,8 +30,8 @@ fn main() -> tantivy::Result<()> {
         let retrieved_doc = searcher.doc(doc_address)?;
         let fname = retrieved_doc.field_values()[0].value().text().unwrap();
         let parts = fname.split("\\").collect::<Vec<_>>();
-        println!("File: {:#?}", parts[4..parts.len()].join("/").bright_blue());
-        println!("Comment: {:#?}", retrieved_doc.field_values()[1].value().text().unwrap().green());
+        println!("File: {:#?}", parts[4..parts.len()].join("/"));
+        println!("Comment: {:#?}", retrieved_doc.field_values()[1].value().text().unwrap());
         println!("");
     }
     Ok(())
